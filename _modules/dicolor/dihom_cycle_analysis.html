@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dicolor.dihom_cycle_analysis &mdash; dicolor 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            dicolor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../theory.html">Theoretical Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">dicolor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">dicolor.dihom_cycle_analysis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dicolor.dihom_cycle_analysis</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">"""For each non-isomorphic digraph G of order n, compute its dichromatic</span>
+<span class="sd">number and the homotopy type of the clique complex of the dihomomorphism</span>
+<span class="sd">graph Hom_di(D, G), where D is a chosen source digraph.</span>
+
+<span class="sd">Usage</span>
+<span class="sd">-----</span>
+<span class="sd">    uv run python -m dicolor.dihom_cycle_analysis &lt;order&gt; [--domain {cycle,arc}]</span>
+<span class="sd">                                                   [--cycle-order K]</span>
+<span class="sd">                                                   [--format {org,csv}]</span>
+
+<span class="sd">where *order* is an integer between 1 and 6.  The source domain D is</span>
+<span class="sd">selected with ``--domain``:</span>
+
+<span class="sd">* ``cycle`` (default) — directed cycle C_k; use ``--cycle-order K`` to set k</span>
+<span class="sd">  (defaults to *order*).</span>
+<span class="sd">* ``arc`` — the single directed arc: two vertices, one directed edge.</span>
+
+<span class="sd">Results are written to ``dihom_cycle_analysis_&lt;order&gt;_c&lt;k&gt;.org`` (cycle) or</span>
+<span class="sd">``dihom_arc_analysis_&lt;order&gt;.org`` (arc) by default.</span>
+
+<span class="sd">The digraphs are indexed starting from 0, matching the position in</span>
+<span class="sd">the digraph6 data files from Brendan McKay's database.  Digons (2-cycles)</span>
+<span class="sd">are always treated as directed cycles when computing the dichromatic number.</span>
+
+<span class="sd">Columns</span>
+<span class="sd">-------</span>
+<span class="sd">* **#** — 0-based index of the digraph G.</span>
+<span class="sd">* **Edges** — number of arcs in G.</span>
+<span class="sd">* **chi_d** — dichromatic number of G (digons counted as cycles).</span>
+<span class="sd">* **Homotopy type of CC(Hom(D, G))** — homotopy type of the clique complex</span>
+<span class="sd">  of the undirected dihomomorphism graph from D to G.  Reported as "empty"</span>
+<span class="sd">  when no dihomomorphism exists.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pycombtop.homotopy_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">homotopy_type_with_verdict</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.digraph_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">digraph_generator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.digraph_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.dihomomorphisms</span><span class="w"> </span><span class="kn">import</span> <span class="n">dihomomorphism_graph</span>
+
+<span class="c1"># Seconds allowed for the homotopy computation of a single graph.</span>
+<span class="n">_HOMOTOPY_TIMEOUT</span> <span class="o">=</span> <span class="mi">120</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_TimeoutError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_time_limit</span><span class="p">(</span><span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Raise _TimeoutError if the block takes longer than *seconds*."""</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handler</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">_TimeoutError</span><span class="p">()</span>
+
+    <span class="n">old</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">_handler</span><span class="p">)</span>
+    <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">alarm</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">old</span><span class="p">)</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Helpers</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_directed_cycle</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the directed n-cycle with vertices 0, 1, ..., n-1."""</span>
+    <span class="n">C</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="n">C</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">C</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_single_arc</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return the digraph with two vertices and one directed edge 0→1."""</span>
+    <span class="n">A</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="n">A</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">A</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_homotopy_str</span><span class="p">(</span><span class="n">verdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Return a plain-text representation of a homotopy verdict."""</span>
+    <span class="n">ht</span> <span class="o">=</span> <span class="n">verdict</span><span class="o">.</span><span class="n">verdict</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">verdict</span><span class="o">.</span><span class="n">is_exact</span><span class="p">:</span>
+        <span class="n">ht</span> <span class="o">+=</span> <span class="s2">" [approx]"</span>
+    <span class="k">return</span> <span class="n">ht</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_row</span><span class="p">(</span>
+    <span class="n">G</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">,</span>
+    <span class="n">Cn</span><span class="p">:</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">"""Return ``(edges, chi_d, homotopy_type_string)`` for digraph *G*."""</span>
+    <span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">allow_digons</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">dihomomorphism_graph</span><span class="p">(</span><span class="n">Cn</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">(),</span> <span class="n">chi_d</span><span class="p">,</span> <span class="s2">"empty"</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">_time_limit</span><span class="p">(</span><span class="n">_HOMOTOPY_TIMEOUT</span><span class="p">):</span>
+            <span class="n">ht</span> <span class="o">=</span> <span class="n">_homotopy_str</span><span class="p">(</span><span class="n">homotopy_type_with_verdict</span><span class="p">(</span><span class="n">H</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">_TimeoutError</span><span class="p">:</span>
+        <span class="n">ht</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"timeout (&gt;</span><span class="si">{</span><span class="n">_HOMOTOPY_TIMEOUT</span><span class="si">}</span><span class="s2">s, V=</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2">, E=</span><span class="si">{</span><span class="n">H</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">)"</span>
+    <span class="k">return</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">(),</span> <span class="n">chi_d</span><span class="p">,</span> <span class="n">ht</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Output</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="n">_ORG_HLINE</span> <span class="o">=</span> <span class="s2">"|---+-------+-------+--------------------------------|"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_write_org_table</span><span class="p">(</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">domain_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">domain_desc</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+    <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Write an org-mode table to *output_file*."""</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"| # | Edges | chi_d | Homotopy type of CC(Hom(</span><span class="si">{</span><span class="n">domain_label</span><span class="si">}</span><span class="s2">,G)) |"</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"#+TITLE: Dihomomorphism analysis for order </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> (source </span><span class="si">{</span><span class="n">domain_label</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"#+AUTHOR: Generated by dihom_cycle_analysis.py</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Source graph: </span><span class="si">{</span><span class="n">domain_desc</span><span class="si">}</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">header</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">_ORG_HLINE</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">chi_d</span><span class="p">,</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">"| </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">edges</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">chi_d</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">ht</span><span class="si">}</span><span class="s2"> |</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_write_csv</span><span class="p">(</span>
+    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">domain_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+    <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Write results as a CSV file to *output_file*."""</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">"w"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">([</span><span class="s2">"#"</span><span class="p">,</span> <span class="s2">"edges"</span><span class="p">,</span> <span class="s2">"chi_d"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"ht_cc_hom_</span><span class="si">{</span><span class="n">domain_label</span><span class="si">}</span><span class="s2">_g"</span><span class="p">])</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+
+
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Main</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../../api_index.html#dicolor.dihom_cycle_analysis.main">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">"Compute dichromatic number and homotopy type of the clique "</span>
+            <span class="s2">"complex of Hom_di(C_n, G) for each non-isomorphic digraph G "</span>
+            <span class="s2">"of order n."</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"order"</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Number of vertices n.  Available: 1 to 6."</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--domain"</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">"cycle"</span><span class="p">,</span> <span class="s2">"arc"</span><span class="p">],</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"cycle"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Source domain digraph: 'cycle' (directed cycle, default) or 'arc' (single directed edge)."</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--cycle-order"</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">"K"</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Length k of the source directed cycle C_k (default: same as order). Only used with --domain cycle."</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--format"</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">"csv"</span><span class="p">,</span> <span class="s2">"org"</span><span class="p">],</span>
+        <span class="n">default</span><span class="o">=</span><span class="s2">"org"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Output format (default: org)."</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--out"</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">"FILE"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Output file (default: dihom_cycle_analysis_&lt;order&gt;_c&lt;k&gt;.&lt;fmt&gt; or dihom_arc_analysis_&lt;order&gt;.&lt;fmt&gt;)."</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">order</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">format</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">domain</span> <span class="o">==</span> <span class="s2">"arc"</span><span class="p">:</span>
+        <span class="n">domain_graph</span> <span class="o">=</span> <span class="n">_single_arc</span><span class="p">()</span>
+        <span class="n">domain_label</span> <span class="o">=</span> <span class="s2">"A"</span>
+        <span class="n">domain_desc</span> <span class="o">=</span> <span class="s2">"single directed arc (0→1)"</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">"dihom_arc_analysis_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">"</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">cycle_order</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">cycle_order</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">n</span>
+        <span class="n">domain_graph</span> <span class="o">=</span> <span class="n">_directed_cycle</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">domain_label</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"C_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">domain_desc</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"directed </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">-cycle C_</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">"</span>
+        <span class="n">output_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="ow">or</span> <span class="sa">f</span><span class="s2">"dihom_cycle_analysis_</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_c</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">fmt</span><span class="si">}</span><span class="s2">"</span>
+
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"Warning: order </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> has many digraphs; computation may be slow."</span><span class="p">,</span>
+            <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"Processing digraphs of order </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> "</span>
+        <span class="sa">f</span><span class="s2">"(source: </span><span class="si">{</span><span class="n">domain_desc</span><span class="si">}</span><span class="s2">)..."</span><span class="p">,</span>
+        <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">G</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">digraph_generator</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
+        <span class="n">edges</span><span class="p">,</span> <span class="n">chi_d</span><span class="p">,</span> <span class="n">ht</span> <span class="o">=</span> <span class="n">_row</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">domain_graph</span><span class="p">)</span>
+        <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">idx</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">chi_d</span><span class="p">,</span> <span class="n">ht</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">idx</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> digraphs processed..."</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">"csv"</span><span class="p">:</span>
+        <span class="n">_write_csv</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">domain_label</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_write_org_table</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">domain_label</span><span class="p">,</span> <span class="n">domain_desc</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Done. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="si">}</span><span class="s2"> digraphs written to: </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Rafael Villarroel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

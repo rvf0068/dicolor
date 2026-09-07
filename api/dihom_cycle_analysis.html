@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dihom Cycle Analysis &mdash; dicolor 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Theoretical Background" href="../theory.html" />
+    <link rel="prev" title="Digraph Analysis" href="digraph_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            dicolor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dihomomorphisms.html">Dihomomorphisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="digraph_analysis.html">Digraph Analysis</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Dihom Cycle Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#columns">Columns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dicolor.dihom_cycle_analysis.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../theory.html">Theoretical Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">dicolor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">API Reference</a></li>
+      <li class="breadcrumb-item active">Dihom Cycle Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/dihom_cycle_analysis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-dicolor.dihom_cycle_analysis">
+<span id="dihom-cycle-analysis"></span><h1>Dihom Cycle Analysis<a class="headerlink" href="#module-dicolor.dihom_cycle_analysis" title="Link to this heading"></a></h1>
+<p>For each non-isomorphic digraph G of order n, compute its dichromatic
+number and the homotopy type of the clique complex of the dihomomorphism
+graph Hom_di(D, G), where D is a chosen source digraph.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
+<blockquote>
+<div><dl class="simple">
+<dt>uv run python -m dicolor.dihom_cycle_analysis &lt;order&gt; [–domain {cycle,arc}]</dt><dd><p>[–cycle-order K]
+[–format {org,csv}]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>where <em>order</em> is an integer between 1 and 6.  The source domain D is
+selected with <code class="docutils literal notranslate"><span class="pre">--domain</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cycle</span></code> (default) — directed cycle C_k; use <code class="docutils literal notranslate"><span class="pre">--cycle-order</span> <span class="pre">K</span></code> to set k
+(defaults to <em>order</em>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arc</span></code> — the single directed arc: two vertices, one directed edge.</p></li>
+</ul>
+<p>Results are written to <code class="docutils literal notranslate"><span class="pre">dihom_cycle_analysis_&lt;order&gt;_c&lt;k&gt;.org</span></code> (cycle) or
+<code class="docutils literal notranslate"><span class="pre">dihom_arc_analysis_&lt;order&gt;.org</span></code> (arc) by default.</p>
+<p>The digraphs are indexed starting from 0, matching the position in
+the digraph6 data files from Brendan McKay’s database.  Digons (2-cycles)
+are always treated as directed cycles when computing the dichromatic number.</p>
+</section>
+<section id="columns">
+<h2>Columns<a class="headerlink" href="#columns" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>#</strong> — 0-based index of the digraph G.</p></li>
+<li><p><strong>Edges</strong> — number of arcs in G.</p></li>
+<li><p><strong>chi_d</strong> — dichromatic number of G (digons counted as cycles).</p></li>
+<li><p><strong>Homotopy type of CC(Hom(D, G))</strong> — homotopy type of the clique complex
+of the undirected dihomomorphism graph from D to G.  Reported as “empty”
+when no dihomomorphism exists.</p></li>
+</ul>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.dihom_cycle_analysis.main">
+<span class="sig-prename descclassname"><span class="pre">dicolor.dihom_cycle_analysis.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/dicolor/dihom_cycle_analysis.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.dihom_cycle_analysis.main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="digraph_analysis.html" class="btn btn-neutral float-left" title="Digraph Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../theory.html" class="btn btn-neutral float-right" title="Theoretical Background" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Rafael Villarroel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

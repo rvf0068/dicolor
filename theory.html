@@ -1,0 +1,276 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Theoretical Background &mdash; dicolor 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Examples" href="examples.html" />
+    <link rel="prev" title="Dihom Cycle Analysis" href="api/dihom_cycle_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            dicolor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Theoretical Background</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dichromatic-number">Dichromatic Number</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#definition">Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#properties">Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#algorithms">Algorithms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-complexity">Time Complexity</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dihomomorphisms">Dihomomorphisms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#key-properties">Key Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dihomomorphism-graph">Dihomomorphism Graph</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#applications">Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">dicolor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Theoretical Background</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/theory.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="theoretical-background">
+<h1>Theoretical Background<a class="headerlink" href="#theoretical-background" title="Link to this heading"></a></h1>
+<section id="dichromatic-number">
+<h2>Dichromatic Number<a class="headerlink" href="#dichromatic-number" title="Link to this heading"></a></h2>
+<section id="definition">
+<h3>Definition<a class="headerlink" href="#definition" title="Link to this heading"></a></h3>
+<p>The <strong>dichromatic number</strong> <span class="math notranslate nohighlight">\(\chi_d(G)\)</span> of a directed graph <span class="math notranslate nohighlight">\(G = (V, E)\)</span> is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\chi_d(G) = \min\{k : V \text{ can be partitioned into } k \text{ acyclic subgraphs}\}\]</div>
+<p>In other words, it is the minimum number of colors needed to color the vertices of <span class="math notranslate nohighlight">\(G\)</span> such that each color class induces a directed acyclic subgraph (DAG).</p>
+</section>
+<section id="properties">
+<h3>Properties<a class="headerlink" href="#properties" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Bounds</strong>: For a directed graph <span class="math notranslate nohighlight">\(G\)</span> on <span class="math notranslate nohighlight">\(n\)</span> vertices:</p>
+<div class="math notranslate nohighlight">
+\[1 \leq \chi_d(G) \leq n\]</div>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\chi_d(G) = 1\)</span> if and only if <span class="math notranslate nohighlight">\(G\)</span> is acyclic (is a DAG)</p></li>
+<li><p><span class="math notranslate nohighlight">\(\chi_d(G) = n\)</span> only for very specific graph structures</p></li>
+</ul>
+</li>
+<li><p><strong>Relationship to Chromatic Number</strong>: For undirected graphs, the chromatic number and dichromatic number have different meanings:</p>
+<ul class="simple">
+<li><p>Undirected chromatic number counts proper vertex colorings</p></li>
+<li><p>Dichromatic number requires acyclicity in color classes</p></li>
+</ul>
+</li>
+<li><p><strong>Cycle Relation</strong>: Every directed cycle requires at least 2 colors:</p>
+<ul class="simple">
+<li><p>A 3-cycle <span class="math notranslate nohighlight">\(0 \to 1 \to 2 \to 0\)</span> has <span class="math notranslate nohighlight">\(\chi_d = 2\)</span></p></li>
+<li><p>A <span class="math notranslate nohighlight">\(k\)</span>-cycle with <span class="math notranslate nohighlight">\(k \geq 3\)</span> has <span class="math notranslate nohighlight">\(\chi_d = 2\)</span></p></li>
+</ul>
+</li>
+<li><p><strong>Digons</strong>: 2-cycles (digons) between vertices can be treated specially:</p>
+<ul class="simple">
+<li><p>With <cite>allow_digons=True</cite>: Digons are colored with 1 color</p></li>
+<li><p>With <cite>allow_digons=False</cite>: Digons require 2 colors</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="algorithms">
+<h3>Algorithms<a class="headerlink" href="#algorithms" title="Link to this heading"></a></h3>
+<p>This package uses backtracking to compute acyclic colorings:</p>
+<ol class="arabic simple">
+<li><p>Order vertices of <span class="math notranslate nohighlight">\(G\)</span></p></li>
+<li><p>For each vertex, determine which colors are safe</p></li>
+<li><p>A color is safe if assigning it doesn’t create a monochromatic directed cycle</p></li>
+<li><p>Use DFS to check for cycles within each color class</p></li>
+<li><p>Backtrack if no safe color exists for a vertex</p></li>
+</ol>
+</section>
+<section id="time-complexity">
+<h3>Time Complexity<a class="headerlink" href="#time-complexity" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Enumerating all acyclic <span class="math notranslate nohighlight">\(k\)</span>-colorings: Exponential in worst case</p></li>
+<li><p>Computing dichromatic number: <span class="math notranslate nohighlight">\(O(n \cdot T(k))\)</span> where <span class="math notranslate nohighlight">\(T(k)\)</span> is time to check all <span class="math notranslate nohighlight">\(k\)</span>-colorings</p></li>
+</ul>
+</section>
+</section>
+<section id="dihomomorphisms">
+<h2>Dihomomorphisms<a class="headerlink" href="#dihomomorphisms" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Definition<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>A <strong>dihomomorphism</strong> from directed graph <span class="math notranslate nohighlight">\(D\)</span> to directed graph <span class="math notranslate nohighlight">\(E\)</span> is a vertex map <span class="math notranslate nohighlight">\(f: V(D) \to V(E)\)</span> satisfying:</p>
+<ol class="arabic">
+<li><p><strong>Arc Condition</strong>: For every arc <span class="math notranslate nohighlight">\(u \to v\)</span> in <span class="math notranslate nohighlight">\(D\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[f(u) \to f(v) \in E \quad \text{or} \quad f(u) = f(v)\]</div>
+</li>
+<li><p><strong>Acyclicity Condition</strong>: For every vertex <span class="math notranslate nohighlight">\(w \in V(E)\)</span>, the induced subgraph:</p>
+<div class="math notranslate nohighlight">
+\[D[f^{-1}(w)] \text{ is acyclic}\]</div>
+</li>
+</ol>
+</section>
+<section id="key-properties">
+<h3>Key Properties<a class="headerlink" href="#key-properties" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Self-loops Forbidden</strong>: If <span class="math notranslate nohighlight">\(D\)</span> has a self-loop, no dihomomorphism exists (the preimage would be cyclic)</p></li>
+<li><p><strong>DAGs Map to DAGs</strong>: If <span class="math notranslate nohighlight">\(D\)</span> is acyclic, then <span class="math notranslate nohighlight">\(D\)</span> can always map to any target graph <span class="math notranslate nohighlight">\(E\)</span> with vertices</p></li>
+<li><p><strong>Existence Conditions</strong>:
+- If <span class="math notranslate nohighlight">\(D\)</span> is empty, exactly one dihomomorphism exists (empty map)
+- If <span class="math notranslate nohighlight">\(E\)</span> is empty and <span class="math notranslate nohighlight">\(D\)</span> non-empty, no dihomomorphism exists
+- Cycles in <span class="math notranslate nohighlight">\(D\)</span> severely restrict possible mappings</p></li>
+<li><p><strong>Complete Mapping Space</strong>: All dihomomorphisms from <span class="math notranslate nohighlight">\(D\)</span> to <span class="math notranslate nohighlight">\(E\)</span> form a discrete set</p></li>
+</ol>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h3>
+<p><strong>Single Arc to Single Arc</strong>:</p>
+<p>Source: <span class="math notranslate nohighlight">\(D = 0 \to 1\)</span>, Target: <span class="math notranslate nohighlight">\(E = 0 \to 1\)</span></p>
+<p>Dihomomorphisms:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(f_1: \{0 \mapsto 0, 1 \mapsto 0\}\)</span> (both vertices map to 0)</p></li>
+<li><p><span class="math notranslate nohighlight">\(f_2: \{0 \mapsto 0, 1 \mapsto 1\}\)</span> (preserving arc)</p></li>
+<li><p><span class="math notranslate nohighlight">\(f_3: \{0 \mapsto 1, 1 \mapsto 1\}\)</span> (both vertices map to 1)</p></li>
+</ul>
+<p>All three satisfy:</p>
+<ul class="simple">
+<li><p>Arc condition: Each preserves the arc structure</p></li>
+<li><p>Acyclicity: Each preimage (single vertex or two vertices with arc) is acyclic</p></li>
+</ul>
+<p><strong>3-Cycle Cannot Map to Point</strong>:</p>
+<p>Source: <span class="math notranslate nohighlight">\(D = 0 \to 1 \to 2 \to 0\)</span>, Target: <span class="math notranslate nohighlight">\(E = \{w\}\)</span> (single vertex)</p>
+<p>If all vertices map to <span class="math notranslate nohighlight">\(w\)</span>, the preimage <span class="math notranslate nohighlight">\(f^{-1}(w) = \{0, 1, 2\}\)</span> contains the 3-cycle, violating acyclicity.</p>
+<p><strong>DAG Can Collapse</strong>:</p>
+<p>Source: <span class="math notranslate nohighlight">\(D = 0 \to 1 \to 2\)</span> (path, acyclic), Target: <span class="math notranslate nohighlight">\(E = \{w\}\)</span></p>
+<p>The map <span class="math notranslate nohighlight">\(f: \{0 \mapsto w, 1 \mapsto w, 2 \mapsto w\}\)</span> works because <span class="math notranslate nohighlight">\(f^{-1}(w) = D\)</span> is acyclic.</p>
+</section>
+</section>
+<section id="dihomomorphism-graph">
+<h2>Dihomomorphism Graph<a class="headerlink" href="#dihomomorphism-graph" title="Link to this heading"></a></h2>
+<p>Given digraphs <span class="math notranslate nohighlight">\(D\)</span> and <span class="math notranslate nohighlight">\(E\)</span>, the <strong>dihomomorphism graph</strong> <span class="math notranslate nohighlight">\(G\)</span> is defined as:</p>
+<ul>
+<li><p><strong>Vertices</strong>: All dihomomorphisms from <span class="math notranslate nohighlight">\(D\)</span> to <span class="math notranslate nohighlight">\(E\)</span></p></li>
+<li><p><strong>Edges</strong>: Two dihomomorphisms <span class="math notranslate nohighlight">\(f, h\)</span> are adjacent if for every arc <span class="math notranslate nohighlight">\(x \to y\)</span> in <span class="math notranslate nohighlight">\(D\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[f(x) \to h(y) \in E \quad \text{and} \quad h(x) \to f(y) \in E\]</div>
+</li>
+</ul>
+<p>This adjacency condition captures the structure of “compatible” dihomomorphisms and enables topological analysis of the mapping space.</p>
+<section id="applications">
+<h3>Applications<a class="headerlink" href="#applications" title="Link to this heading"></a></h3>
+<p>The dihomomorphism graph is used to study:
+- Homotopy type of mapping spaces
+- Clique complexes of dihomomorphism graphs
+- Topological properties of directed graph structures</p>
+</section>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Lovász, L. (2010). “Large networks and graph limits.”
+American Mathematical Society.</p></li>
+<li><p>Bollobás, B. (1998). “Modern Graph Theory.”
+Springer-Verlag.</p></li>
+<li><p>McKay, B. D. (2011). “Digraphs.”
+<a class="reference external" href="https://users.cecs.anu.edu.au/~bdm/data/digraphs.html">https://users.cecs.anu.edu.au/~bdm/data/digraphs.html</a></p></li>
+<li><p>Diestel, R. (2017). “Graph Theory (5th Edition).”
+Springer-Verlag.</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api/dihom_cycle_analysis.html" class="btn btn-neutral float-left" title="Dihom Cycle Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Rafael Villarroel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

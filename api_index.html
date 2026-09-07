@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; dicolor 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            dicolor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theoretical Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">dicolor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api_index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="module-dicolor.dihomomorphisms">
+<span id="dihomomorphisms-module"></span><h2>Dihomomorphisms Module<a class="headerlink" href="#module-dicolor.dihomomorphisms" title="Link to this heading"></a></h2>
+<p>Generate all dihomomorphisms between two directed graphs.</p>
+<p>A <em>dihomomorphism</em> f: D -&gt; E is a map on vertices such that:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><strong>Arc condition</strong>: for every arc u-&gt;v in D, either f(u)-&gt;f(v) is an arc
+in E, or f(u) = f(v).</p></li>
+<li><p><strong>Acyclicity condition</strong>: for every vertex w in E, the subgraph of D
+induced by the preimage f^{-1}(w) is acyclic (contains no directed
+cycle).</p></li>
+</ol>
+</div></blockquote>
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>uv run python -m dicolor.dihomomorphisms &lt;d6_source&gt; &lt;d6_target&gt;</p>
+</div></blockquote>
+<p>where <code class="docutils literal notranslate"><span class="pre">d6_source</span></code> and <code class="docutils literal notranslate"><span class="pre">d6_target</span></code> are digraph6 strings (as produced by
+McKay’s utilities or the <code class="xref py py-func docutils literal notranslate"><span class="pre">parse_digraph6()</span></code> function).  By default all
+dihomomorphisms are printed; use <code class="docutils literal notranslate"><span class="pre">--count</span></code> to display only their number.</p>
+<p class="rubric">Example</p>
+<p>Single arc 0-&gt;1 as both source and target (digraph6 <code class="docutils literal notranslate"><span class="pre">&quot;&amp;AO&quot;</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uv</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">dicolor</span><span class="o">.</span><span class="n">dihomomorphisms</span> <span class="s2">"&amp;AO"</span> <span class="s2">"&amp;AO"</span>
+</pre></div>
+</div>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.dihomomorphisms.dihomomorphism_graph">
+<span class="sig-prename descclassname"><span class="pre">dicolor.dihomomorphisms.</span></span><span class="sig-name descname"><span class="pre">dihomomorphism_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DiGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DiGraph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Graph</span></span></span><a class="reference internal" href="_modules/dicolor/dihomomorphisms.html#dihomomorphism_graph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.dihomomorphisms.dihomomorphism_graph" title="Link to this definition"></a></dt>
+<dd><p>Return the undirected graph of dihomomorphisms from <em>D</em> to <em>E</em>.</p>
+<p>Vertices of the returned graph are all dihomomorphisms from <em>D</em> to <em>E</em>,
+each represented as a tuple of image values in the order of
+<code class="docutils literal notranslate"><span class="pre">list(D.nodes())</span></code>.  Two dihomomorphisms f and h are adjacent when, for
+every arc x-&gt;y in <em>D</em>, both f(x)-&gt;h(y) and h(x)-&gt;f(y) are arcs in <em>E</em>.</p>
+<p>Each node carries the corresponding dihomomorphism as the node attribute
+<code class="docutils literal notranslate"><span class="pre">&quot;map&quot;</span></code> (a <code class="docutils literal notranslate"><span class="pre">dict</span></code> mapping D-vertices to E-vertices).</p>
+<p class="rubric">Parameters</p>
+<dl class="simple">
+<dt>D<span class="classifier">networkx.DiGraph</span></dt><dd><p>Source directed graph.</p>
+</dd>
+<dt>E<span class="classifier">networkx.DiGraph</span></dt><dd><p>Target directed graph.</p>
+</dd>
+</dl>
+<p class="rubric">Returns</p>
+<dl class="simple">
+<dt>networkx.Graph</dt><dd><p>Undirected graph whose vertices are dihomomorphisms from <em>D</em> to <em>E</em>
+and whose edges encode the adjacency relation described above.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>When <em>D</em> has no arcs the adjacency condition is vacuously satisfied, so
+the result is the complete graph on all dihomomorphisms.</p>
+<p class="rubric">Examples</p>
+<p>Source and target are both a single arc 0-&gt;1; the condition requires
+arrows <em>crossing</em> between two maps, which the single arc cannot support:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>  <span class="c1"># digon</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">dihomomorphism_graph</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+<span class="go">(4, 1)</span>
+</pre></div>
+</div>
+<p>When <em>D</em> has no arcs the result is a complete graph:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">D0</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D0</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G0</span> <span class="o">=</span> <span class="n">dihomomorphism_graph</span><span class="p">(</span><span class="n">D0</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">G0</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span> <span class="ow">and</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_isomorphic</span><span class="p">(</span><span class="n">G0</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">complete_graph</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.dihomomorphisms.dihomomorphisms">
+<span class="sig-prename descclassname"><span class="pre">dicolor.dihomomorphisms.</span></span><span class="sig-name descname"><span class="pre">dihomomorphisms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DiGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DiGraph</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Iterator</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Hashable</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Hashable</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/dicolor/dihomomorphisms.html#dihomomorphisms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.dihomomorphisms.dihomomorphisms" title="Link to this definition"></a></dt>
+<dd><p>Generate all dihomomorphisms from <em>D</em> to <em>E</em>.</p>
+<p>A dihomomorphism f: D -&gt; E is a vertex map satisfying two conditions:</p>
+<ol class="arabic simple">
+<li><p><strong>Arc condition</strong> — for every arc u-&gt;v in <em>D</em>, either f(u)-&gt;f(v) is an
+arc in <em>E</em>, or f(u) = f(v).</p></li>
+<li><p><strong>Acyclicity condition</strong> — for every vertex w in <em>E</em>, the subgraph of
+<em>D</em> induced by the preimage f^{-1}(w) is acyclic.</p></li>
+</ol>
+<p>The function uses backtracking: vertices of <em>D</em> are assigned images in <em>E</em>
+one at a time (in the order returned by <code class="docutils literal notranslate"><span class="pre">D.nodes()</span></code>).  At each step the
+arc condition is checked against all already-assigned neighbours, and the
+acyclicity condition is checked incrementally on the growing preimage.</p>
+<p class="rubric">Parameters</p>
+<dl class="simple">
+<dt>D<span class="classifier">networkx.DiGraph</span></dt><dd><p>Source directed graph.</p>
+</dd>
+<dt>E<span class="classifier">networkx.DiGraph</span></dt><dd><p>Target directed graph.</p>
+</dd>
+</dl>
+<p class="rubric">Yields</p>
+<dl class="simple">
+<dt>dict</dt><dd><p>Each yielded mapping is a <code class="docutils literal notranslate"><span class="pre">dict</span></code> from every vertex of <em>D</em> to a
+vertex of <em>E</em> that satisfies both conditions.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>If <em>D</em> contains a self-loop, no dihomomorphism exists (a singleton
+preimage with a self-loop is already cyclic).</p></li>
+<li><p>If <em>D</em> is empty (no vertices), the unique empty map is yielded.</p></li>
+<li><p>If <em>E</em> is empty (no vertices) and <em>D</em> is non-empty, no map exists.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">D</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">dihomomorphisms</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">))</span>
+<span class="go">[{0: 0, 1: 0}, {0: 0, 1: 1}, {0: 1, 1: 1}]</span>
+</pre></div>
+</div>
+<p>A directed 3-cycle cannot be mapped to a single vertex (the full preimage
+would be cyclic):</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C3</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pt</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pt</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">dihomomorphisms</span><span class="p">(</span><span class="n">C3</span><span class="p">,</span> <span class="n">pt</span><span class="p">))</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<p>A tournament on 3 vertices (a DAG) can be collapsed to a single point:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">T3</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">list</span><span class="p">(</span><span class="n">dihomomorphisms</span><span class="p">(</span><span class="n">T3</span><span class="p">,</span> <span class="n">pt</span><span class="p">))</span>
+<span class="go">[{0: 0, 1: 0, 2: 0}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.dihomomorphisms.main">
+<span class="sig-prename descclassname"><span class="pre">dicolor.dihomomorphisms.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dicolor/dihomomorphisms.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.dihomomorphisms.main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-dicolor.digraph_analysis">
+<span id="digraph-analysis-module"></span><h2>Digraph Analysis Module<a class="headerlink" href="#module-dicolor.digraph_analysis" title="Link to this heading"></a></h2>
+<p>Compute dichromatic number and homotopy type of the directed neighborhood
+complex for each non-isomorphic digraph of a given order.</p>
+<section id="id1">
+<h3>Usage<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<blockquote>
+<div><p>uv run python -m dicolor.digraph_analysis &lt;order&gt; [–format {org,csv}]</p>
+</div></blockquote>
+<p>where <em>order</em> is an integer between 1 and 6.  Results are written to
+<code class="docutils literal notranslate"><span class="pre">digraph_analysis_&lt;order&gt;.org</span></code> (default) or <code class="docutils literal notranslate"><span class="pre">.csv</span></code> in the current
+directory.</p>
+<p>The digraphs are indexed starting from 0, matching the position in
+the digraph6 data files.</p>
+</section>
+<section id="data-source">
+<h3>Data source<a class="headerlink" href="#data-source" title="Link to this heading"></a></h3>
+<p>Digraph data obtained from Brendan McKay’s page:
+<a class="reference external" href="https://users.cecs.anu.edu.au/~bdm/data/digraphs.html">https://users.cecs.anu.edu.au/~bdm/data/digraphs.html</a></p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.digraph_analysis.dichromatic_number">
+<span class="sig-prename descclassname"><span class="pre">dicolor.digraph_analysis.</span></span><span class="sig-name descname"><span class="pre">dichromatic_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">G</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DiGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_digons</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="_modules/dicolor/digraph_analysis.html#dichromatic_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.digraph_analysis.dichromatic_number" title="Link to this definition"></a></dt>
+<dd><p>Return the dichromatic number of <em>G</em>.</p>
+<p>The dichromatic number is the minimum number of colors needed for an
+acyclic coloring: a coloring such that each monochromatic subgraph
+contains no directed cycle.  When <em>allow_digons</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, a directed
+cycle must have at least 3 vertices to be forbidden (digons are ignored).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.digraph_analysis.main">
+<span class="sig-prename descclassname"><span class="pre">dicolor.digraph_analysis.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dicolor/digraph_analysis.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.digraph_analysis.main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-dicolor.dihom_cycle_analysis">
+<span id="dihom-cycle-analysis-module"></span><h2>Dihom Cycle Analysis Module<a class="headerlink" href="#module-dicolor.dihom_cycle_analysis" title="Link to this heading"></a></h2>
+<p>For each non-isomorphic digraph G of order n, compute its dichromatic
+number and the homotopy type of the clique complex of the dihomomorphism
+graph Hom_di(D, G), where D is a chosen source digraph.</p>
+<section id="id2">
+<h3>Usage<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<blockquote>
+<div><dl class="simple">
+<dt>uv run python -m dicolor.dihom_cycle_analysis &lt;order&gt; [–domain {cycle,arc}]</dt><dd><p>[–cycle-order K]
+[–format {org,csv}]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>where <em>order</em> is an integer between 1 and 6.  The source domain D is
+selected with <code class="docutils literal notranslate"><span class="pre">--domain</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cycle</span></code> (default) — directed cycle C_k; use <code class="docutils literal notranslate"><span class="pre">--cycle-order</span> <span class="pre">K</span></code> to set k
+(defaults to <em>order</em>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">arc</span></code> — the single directed arc: two vertices, one directed edge.</p></li>
+</ul>
+<p>Results are written to <code class="docutils literal notranslate"><span class="pre">dihom_cycle_analysis_&lt;order&gt;_c&lt;k&gt;.org</span></code> (cycle) or
+<code class="docutils literal notranslate"><span class="pre">dihom_arc_analysis_&lt;order&gt;.org</span></code> (arc) by default.</p>
+<p>The digraphs are indexed starting from 0, matching the position in
+the digraph6 data files from Brendan McKay’s database.  Digons (2-cycles)
+are always treated as directed cycles when computing the dichromatic number.</p>
+</section>
+<section id="columns">
+<h3>Columns<a class="headerlink" href="#columns" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>#</strong> — 0-based index of the digraph G.</p></li>
+<li><p><strong>Edges</strong> — number of arcs in G.</p></li>
+<li><p><strong>chi_d</strong> — dichromatic number of G (digons counted as cycles).</p></li>
+<li><p><strong>Homotopy type of CC(Hom(D, G))</strong> — homotopy type of the clique complex
+of the undirected dihomomorphism graph from D to G.  Reported as “empty”
+when no dihomomorphism exists.</p></li>
+</ul>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="dicolor.dihom_cycle_analysis.main">
+<span class="sig-prename descclassname"><span class="pre">dicolor.dihom_cycle_analysis.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dicolor/dihom_cycle_analysis.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dicolor.dihom_cycle_analysis.main" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Rafael Villarroel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

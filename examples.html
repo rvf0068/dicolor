@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Examples &mdash; dicolor 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Theoretical Background" href="theory.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            dicolor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theoretical Background</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#basic-dichromatic-number-computation">Basic Dichromatic Number Computation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-digons">Understanding Digons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-vertex-colorings">Generating Vertex Colorings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-dihomomorphisms">Working with Dihomomorphisms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-example-custom-graph-construction">Advanced Example: Custom Graph Construction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#batch-processing-digraphs">Batch Processing Digraphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#real-world-pattern-graph-coloring-verification">Real-world Pattern: Graph Coloring Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-analysis">Performance Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-with-networkx">Integration with NetworkX</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">dicolor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Examples</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Link to this heading"></a></h1>
+<p>This section provides practical examples of using the dicolor package.</p>
+<section id="basic-dichromatic-number-computation">
+<h2>Basic Dichromatic Number Computation<a class="headerlink" href="#basic-dichromatic-number-computation" title="Link to this heading"></a></h2>
+<p>Compute the dichromatic number for various graph types:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span>
+
+<span class="c1"># Directed Acyclic Graph (DAG)</span>
+<span class="n">dag</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DAG dichromatic number: </span><span class="si">{</span><span class="n">dichromatic_number</span><span class="p">(</span><span class="n">dag</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 1</span>
+
+<span class="c1"># Directed 3-cycle</span>
+<span class="n">cycle3</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"3-cycle dichromatic number: </span><span class="si">{</span><span class="n">dichromatic_number</span><span class="p">(</span><span class="n">cycle3</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 2</span>
+
+<span class="c1"># Directed 4-cycle</span>
+<span class="n">cycle4</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"4-cycle dichromatic number: </span><span class="si">{</span><span class="n">dichromatic_number</span><span class="p">(</span><span class="n">cycle4</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 2</span>
+
+<span class="c1"># Tournament (complete directed graph)</span>
+<span class="n">tournament</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tournament dichromatic number: </span><span class="si">{</span><span class="n">dichromatic_number</span><span class="p">(</span><span class="n">tournament</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 1</span>
+</pre></div>
+</div>
+</section>
+<section id="understanding-digons">
+<h2>Understanding Digons<a class="headerlink" href="#understanding-digons" title="Link to this heading"></a></h2>
+<p>Explore how digons (2-cycles) are treated:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span>
+
+<span class="c1"># Create a digon (0 &lt;-&gt; 1)</span>
+<span class="n">digon</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+
+<span class="c1"># With digons allowed (default)</span>
+<span class="n">chi_allow</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">digon</span><span class="p">,</span> <span class="n">allow_digons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Digon with allow_digons=True: </span><span class="si">{</span><span class="n">chi_allow</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 1</span>
+
+<span class="c1"># Without allowing digons</span>
+<span class="n">chi_forbid</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">digon</span><span class="p">,</span> <span class="n">allow_digons</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Digon with allow_digons=False: </span><span class="si">{</span><span class="n">chi_forbid</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 2</span>
+
+<span class="c1"># Digon is an edge-contraction of 3-cycle at one vertex</span>
+<span class="c1"># but differs in cycle length requirements</span>
+</pre></div>
+</div>
+</section>
+<section id="generating-vertex-colorings">
+<h2>Generating Vertex Colorings<a class="headerlink" href="#generating-vertex-colorings" title="Link to this heading"></a></h2>
+<p>Generate all valid acyclic colorings:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor.digraph_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">_acyclic_coloring</span>
+
+<span class="c1"># Simple directed path</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+
+<span class="c1"># Get all 1-colorings (should be just one for a path)</span>
+<span class="n">colorings_1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_acyclic_coloring</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of 1-colorings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">colorings_1</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">coloring</span> <span class="ow">in</span> <span class="n">colorings_1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Coloring: </span><span class="si">{</span><span class="n">coloring</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># For 2-colorings (should be many more options)</span>
+<span class="n">colorings_2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">_acyclic_coloring</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of 2-colorings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">colorings_2</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="working-with-dihomomorphisms">
+<h2>Working with Dihomomorphisms<a class="headerlink" href="#working-with-dihomomorphisms" title="Link to this heading"></a></h2>
+<p>Generate and explore dihomomorphisms:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dihomomorphisms</span><span class="p">,</span> <span class="n">dihomomorphism_graph</span>
+
+<span class="c1"># Example 1: Simple arc</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Example 1: Arc to Arc ==="</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+
+<span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dihomomorphisms</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">E</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span><span class="si">}</span><span class="s2"> dihomomorphisms"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">maps</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  f_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Example 2: Path to single vertex</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Example 2: Path to Point ==="</span><span class="p">)</span>
+<span class="n">D2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">E2</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="n">E2</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">maps2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dihomomorphisms</span><span class="p">(</span><span class="n">D2</span><span class="p">,</span> <span class="n">E2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">maps2</span><span class="p">)</span><span class="si">}</span><span class="s2"> dihomomorphisms"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">maps2</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Example 3: Dihomomorphism graph structure</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== Example 3: Dihomomorphism Graph ==="</span><span class="p">)</span>
+<span class="n">D3</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="n">E3</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>  <span class="c1"># Digon</span>
+
+<span class="n">G</span> <span class="o">=</span> <span class="n">dihomomorphism_graph</span><span class="p">(</span><span class="n">D3</span><span class="p">,</span> <span class="n">E3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Graph: </span><span class="si">{</span><span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span><span class="si">}</span><span class="s2"> vertices, </span><span class="si">{</span><span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2"> edges"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Adjacency:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">u</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="advanced-example-custom-graph-construction">
+<h2>Advanced Example: Custom Graph Construction<a class="headerlink" href="#advanced-example-custom-graph-construction" title="Link to this heading"></a></h2>
+<p>Build and analyze custom directed graphs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span><span class="p">,</span> <span class="n">dihomomorphisms</span>
+
+<span class="c1"># Create a tournament (complete directed graph with one direction per edge)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">tournament</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="n">tournament</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">tournament</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>  <span class="c1"># Always i -&gt; j</span>
+
+<span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">tournament</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tournament on </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> vertices: dichromatic number = </span><span class="si">{</span><span class="n">chi_d</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Create a "butterfly" graph (two triangles sharing a vertex)</span>
+<span class="n">butterfly</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+<span class="n">butterfly</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>      <span class="c1"># Triangle 1</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>      <span class="c1"># Triangle 2</span>
+<span class="p">])</span>
+
+<span class="n">chi_butterfly</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">butterfly</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Butterfly graph: dichromatic number = </span><span class="si">{</span><span class="n">chi_butterfly</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Find dihomomorphisms from path to butterfly</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+<span class="n">maps</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dihomomorphisms</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">butterfly</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dihomomorphisms from path to butterfly: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">maps</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-processing-digraphs">
+<h2>Batch Processing Digraphs<a class="headerlink" href="#batch-processing-digraphs" title="Link to this heading"></a></h2>
+<p>Analyze all small non-isomorphic digraphs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span><span class="p">,</span> <span class="n">digraph_generator</span>
+
+<span class="c1"># Analyze all digraphs of order 3</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== Digraphs of order 3 ==="</span><span class="p">)</span>
+<span class="n">stats</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">G</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">digraph_generator</span><span class="p">(</span><span class="mi">3</span><span class="p">)):</span>
+    <span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">chi_d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+        <span class="n">stats</span><span class="p">[</span><span class="n">chi_d</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">stats</span><span class="p">[</span><span class="n">chi_d</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">idx</span><span class="p">,</span> <span class="n">edges</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">chi_d</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">stats</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="n">graphs</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="n">chi_d</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"chi_d = </span><span class="si">{</span><span class="n">chi_d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">graphs</span><span class="p">)</span><span class="si">}</span><span class="s2"> digraphs"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">edges</span> <span class="ow">in</span> <span class="n">graphs</span><span class="p">[:</span><span class="mi">3</span><span class="p">]:</span>  <span class="c1"># Show first 3</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Graph </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">edges</span><span class="si">}</span><span class="s2"> arcs"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="real-world-pattern-graph-coloring-verification">
+<h2>Real-world Pattern: Graph Coloring Verification<a class="headerlink" href="#real-world-pattern-graph-coloring-verification" title="Link to this heading"></a></h2>
+<p>Verify if a coloring is valid:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor.digraph_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">_acyclic_coloring</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">verify_coloring</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">coloring</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Verify that a coloring is acyclic."""</span>
+    <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">coloring</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="c1"># Get vertices of this color</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coloring</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">color</span><span class="p">]</span>
+        <span class="n">subgraph</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="c1"># Check if acyclic</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_directed_acyclic_graph</span><span class="p">(</span><span class="n">subgraph</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="c1"># Example: Verify a manual coloring</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+
+<span class="c1"># Try coloring</span>
+<span class="n">coloring</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="n">is_valid</span> <span class="o">=</span> <span class="n">verify_coloring</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">coloring</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Coloring </span><span class="si">{</span><span class="n">coloring</span><span class="si">}</span><span class="s2"> is valid: </span><span class="si">{</span><span class="n">is_valid</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Get actual minimum coloring</span>
+<span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="n">actual_coloring</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_acyclic_coloring</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">chi_d</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Minimum coloring: </span><span class="si">{</span><span class="n">actual_coloring</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Is valid: </span><span class="si">{</span><span class="n">verify_coloring</span><span class="p">(</span><span class="n">G</span><span class="p">,</span><span class="w"> </span><span class="n">actual_coloring</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-analysis">
+<h2>Performance Analysis<a class="headerlink" href="#performance-analysis" title="Link to this heading"></a></h2>
+<p>Analyze performance on larger graphs:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span><span class="p">,</span> <span class="n">digraph_generator</span>
+
+<span class="c1"># Time dichromatic computation for increasing orders</span>
+<span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">G</span> <span class="ow">in</span> <span class="n">digraph_generator</span><span class="p">(</span><span class="n">order</span><span class="p">):</span>
+        <span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">elapsed</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Order </span><span class="si">{</span><span class="n">order</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">count</span><span class="si">}</span><span class="s2"> digraphs in </span><span class="si">{</span><span class="n">elapsed</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-networkx">
+<h2>Integration with NetworkX<a class="headerlink" href="#integration-with-networkx" title="Link to this heading"></a></h2>
+<p>Combine dicolor with NetworkX utilities:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dicolor</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span>
+
+<span class="c1"># Create a random directed graph</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Convert to directed graph</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">):</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">to_directed</span><span class="p">()</span>
+
+<span class="c1"># Analyze</span>
+<span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Random graph dichromatic number: </span><span class="si">{</span><span class="n">chi_d</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Check connectivity</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Strongly connected: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">is_strongly_connected</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of SCCs: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">number_strongly_connected_components</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="theory.html" class="btn btn-neutral float-left" title="Theoretical Background" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Rafael Villarroel.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
