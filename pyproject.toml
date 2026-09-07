@@ -25,7 +25,8 @@ classifiers = [
 ]
 dependencies = [
     "networkx>=2.5",
-    "pycombtop>=0.1",
+    "pycombtop @ git+https://github.com/rvf0068/pycliques-project.git#subdirectory=packages/pycombtop",
+    "pycliques @ git+https://github.com/rvf0068/pycliques-project.git#subdirectory=packages/pycliques",
 ]
 
 [project.optional-dependencies]
