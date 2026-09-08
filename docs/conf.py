@@ -3,8 +3,8 @@ import sys
 sys.path.insert(0, os.path.abspath('../src'))
 
 project = 'dicolor'
-copyright = '2026, Rafael Villarroel'
-author = 'Rafael Villarroel'
+copyright = '2026, Christian Rubio and Rafael Villarroel'
+author = 'Christian Rubio and Rafael Villarroel'
 release = '0.1.0'
 
 extensions = [

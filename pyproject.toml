@@ -9,6 +9,7 @@ description = "Directed graph analysis: dichromatic numbers and dihomomorphisms.
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [
+    {name = "Christian Rubio", email = "ok.rubio@gmail.com"},
     {name = "Rafael Villarroel", email = "rvf0068@gmail.com"}
 ]
 license = {text = "MIT"}
