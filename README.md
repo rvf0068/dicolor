@@ -137,9 +137,9 @@ Options:
 
 ### Dichromatic Number
 
-The **dichromatic number** $\chi_d(G)$ of a directed graph $G$ is the minimum number of colors needed for an acyclic coloring—a coloring where each color class induces an acyclic subgraph (contains no directed cycles).
+The **dichromatic number** $\chi_d(G)$ of a directed graph $G$ is the minimum number of colors needed for an acyclic coloring—a coloring where each color class induces an acyclic subdigraph (contains no directed cycles).
 
-This is equivalent to partitioning the vertices into the minimum number of directed acyclic subgraphs.
+This is equivalent to partitioning the vertices into the minimum number of directed acyclic subdigraphs.
 
 ### Dihomomorphisms
 
@@ -187,8 +187,9 @@ MIT License - See LICENSE file for details
 
 ## References
 
+- G. Araujo-Pardo, J. J. Montellano-Ballesteros, M. Olsen and C. Rubio-Montiel; The diachromatic number of digraphs, Electron. J. Combin., 25(3):#P3.51,17pp, 2018.
 - McKay, B. D. (2011). "Digraphs." <https://users.cecs.anu.edu.au/~bdm/data/digraphs.html>
-- Related work on directed graph colorings and homomorphisms
+
 
 ## Contributing
 
