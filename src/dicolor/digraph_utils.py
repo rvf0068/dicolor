@@ -9,8 +9,8 @@ References:
 """
 
 import gzip
-from collections.abc import Iterator
 from importlib import resources
+from typing import Iterator, List
 
 import networkx as nx
 
@@ -26,18 +26,6 @@ _dict_digraphs = {
     5: "dig5.d6",
     6: "dig6.d6.gz",
 }
-
-
-def _get_data_file_path(filename: str) -> resources.abc.Traversable:
-    """Helper function to resolve the path to a digraph data file.
-
-    Args:
-        filename: Name of the data file (e.g., 'dig3.d6').
-
-    Returns:
-        A Traversable object representing the file path.
-    """
-    return resources.files(DATA_PACKAGE).joinpath(filename)
 
 
 def parse_digraph6(d6_str: str) -> nx.DiGraph:
@@ -140,24 +128,27 @@ def digraph_generator(n: int) -> Iterator[nx.DiGraph]:
         raise ValueError(msg)
 
     filename = _dict_digraphs[n]
-    file_path = _get_data_file_path(filename)
 
     if filename.endswith(".gz"):
-        with file_path.open("rb") as raw_file:
+        with resources.open_binary(DATA_PACKAGE, filename) as raw_file:
             with gzip.open(raw_file, "rt", encoding="utf-8") as graph_file:
                 for line in graph_file:
                     line = line.strip()
+                    if isinstance(line, bytes):
+                        line = line.decode("utf-8")
                     if line:
                         yield parse_digraph6(line)
     else:
-        with file_path.open("r", encoding="utf-8") as graph_file:
+        with resources.open_text(
+            DATA_PACKAGE, filename, encoding="utf-8"
+        ) as graph_file:
             for line in graph_file:
                 line = line.strip()
                 if line:
                     yield parse_digraph6(line)
 
 
-def list_digraphs(n: int) -> list[nx.DiGraph]:
+def list_digraphs(n: int) -> List[nx.DiGraph]:
     """List all non-isomorphic directed graphs on *n* vertices.
 
     Data obtained from Brendan McKay's digraph data page:

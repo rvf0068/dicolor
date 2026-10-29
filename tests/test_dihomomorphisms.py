@@ -1,6 +1,5 @@
 """Tests for the dihomomorphisms module."""
 
-import pytest
 import networkx as nx
 
 from dicolor.dihomomorphisms import dihomomorphisms, dihomomorphism_graph

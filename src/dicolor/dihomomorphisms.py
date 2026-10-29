@@ -27,7 +27,6 @@ Single arc 0->1 as both source and target (digraph6 ``"&AO"``)::
 from __future__ import annotations
 
 import argparse
-import sys
 from collections.abc import Hashable, Iterator
 
 import networkx as nx
@@ -334,4 +333,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

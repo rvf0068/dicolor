@@ -1,6 +1,5 @@
 """Tests for the digraph_analysis module."""
 
-import pytest
 import networkx as nx
 
 from dicolor.digraph_analysis import dichromatic_number, _acyclic_coloring

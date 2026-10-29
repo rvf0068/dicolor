@@ -38,12 +38,11 @@ from __future__ import annotations
 import argparse
 import csv
 import signal
-import sys
 from contextlib import contextmanager
 
 import networkx as nx
 
-from pycombtop.homotopy_type import homotopy_type_with_verdict
+from pycombtop.homotopy_type import HomotopyVerdict, homotopy_type_with_verdict
 
 from .digraph_utils import digraph_generator
 from .digraph_analysis import dichromatic_number
@@ -61,7 +60,8 @@ class _TimeoutError(Exception):
 def _time_limit(seconds: int):
     """Raise _TimeoutError if the block takes longer than *seconds*."""
 
-    def _handler(signum, frame):
+    def _handler(_signum, _frame):
+        _ = (_signum, _frame)
         raise _TimeoutError()
 
     old = signal.signal(signal.SIGALRM, _handler)
@@ -94,7 +94,7 @@ def _single_arc() -> nx.DiGraph:
     return A
 
 
-def _homotopy_str(verdict) -> str:
+def _homotopy_str(verdict: HomotopyVerdict) -> str:
     """Return a plain-text representation of a homotopy verdict."""
     ht = verdict.verdict
     if not verdict.is_exact:
@@ -146,7 +146,6 @@ def _write_org_table(
 
 
 def _write_csv(
-    n: int,
     domain_label: str,
     rows: list[tuple[int, int, int, str]],
     output_file: str,
@@ -238,11 +237,11 @@ def main() -> None:
             print(f"  {idx} digraphs processed...", flush=True)
 
     if fmt == "csv":
-        _write_csv(n, domain_label, rows, output_file)
+        _write_csv(domain_label, rows, output_file)
     else:
         _write_org_table(n, domain_label, domain_desc, rows, output_file)
     print(f"Done. {len(rows)} digraphs written to: {output_file}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

@@ -23,46 +23,15 @@ from __future__ import annotations
 
 import argparse
 import csv
-import gzip
-import sys
-from importlib import resources
 
 import networkx as nx
 
 from pycombtop import directed_neighborhood_complex
-from pycombtop.homotopy_type import homotopy_type_sc_with_verdict
+from pycombtop.homotopy_type import HomotopyVerdict, homotopy_type_sc_with_verdict
 
-from .digraph_utils import parse_digraph6, _dict_digraphs, _get_data_file_path
+from .digraph_utils import digraph_generator
 
 # ---------------------------------------------------------------------------
-# Data loading
-# ---------------------------------------------------------------------------
-
-
-def _iter_digraph6_pairs(n: int):
-    """Yield ``(d6_string, DiGraph)`` pairs for all digraphs of order *n*."""
-    if n not in _dict_digraphs:
-        raise ValueError(
-            f"No data for order {n}. Available orders: {sorted(_dict_digraphs)}"
-        )
-    filename = _dict_digraphs[n]
-    file_path = _get_data_file_path(filename)
-
-    if filename.endswith(".gz"):
-        with file_path.open("rb") as raw_file:
-            with gzip.open(raw_file, "rt", encoding="utf-8") as f:
-                for line in f:
-                    line = line.strip()
-                    if line:
-                        yield line, parse_digraph6(line)
-    else:
-        with file_path.open("r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    yield line, parse_digraph6(line)
-
-
 # ---------------------------------------------------------------------------
 # Acyclic coloring
 # ---------------------------------------------------------------------------
@@ -136,10 +105,12 @@ def _acyclic_coloring(
     allow_digons: bool = True,
 ):
     """Generate all acyclic *k*-colorings of *G* via backtracking."""
+    if nodes is None:
+        nodes = list(G.nodes())
+    if node_to_idx is None:
+        node_to_idx = {node: i for i, node in enumerate(nodes)}
     if colors_list is None:
         colors_list = []
-        nodes = list(G.nodes())
-        node_to_idx = {node: i for i, node in enumerate(nodes)}
 
     if len(colors_list) == len(nodes):
         yield {nodes[i]: colors_list[i] for i in range(len(nodes))}
@@ -172,7 +143,7 @@ def dichromatic_number(G: nx.DiGraph, allow_digons: bool = True) -> int:
 # ---------------------------------------------------------------------------
 
 
-def _homotopy_str(verdict) -> str:
+def _homotopy_str(verdict: HomotopyVerdict) -> str:
     """Return a plain-text representation of a homotopy verdict."""
     ht = verdict.verdict
     if not verdict.is_exact:
@@ -181,7 +152,6 @@ def _homotopy_str(verdict) -> str:
 
 
 def _write_csv(
-    n: int,
     rows: list[tuple[int, int, int, str]],
     output_file: str,
 ) -> None:
@@ -226,7 +196,7 @@ def main() -> None:
     parser.add_argument(
         "order",
         type=int,
-        help=f"Number of vertices. Available: {sorted(_DIGRAPH_FILES)}.",
+        help="Number of vertices. Available: 1 to 6.",
     )
     parser.add_argument(
         "--format",
@@ -239,16 +209,20 @@ def main() -> None:
         metavar="FILE",
         help="Output file (default: digraph_analysis_<order>.<fmt>).",
     )
-    parser.add_argument(
+    digon_options = parser.add_mutually_exclusive_group()
+    digon_options.add_argument(
         "--allow-digons",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help=(
-            "Allow digons (2-cycles) in monochromatic subgraphs, i.e. a "
-            "directed cycle must have at least 3 vertices to be forbidden "
-            "(default: True). Use --no-allow-digons to forbid digons."
-        ),
+        dest="allow_digons",
+        action="store_true",
+        help="Allow digons in monochromatic subgraphs (the default).",
     )
+    digon_options.add_argument(
+        "--no-allow-digons",
+        dest="allow_digons",
+        action="store_false",
+        help="Treat digons as forbidden monochromatic cycles.",
+    )
+    parser.set_defaults(allow_digons=True)
     args = parser.parse_args()
 
     n = args.order
@@ -258,7 +232,7 @@ def main() -> None:
     print(f"Processing digraphs of order {n}...", flush=True)
 
     rows: list[tuple[int, int, int, str]] = []
-    for idx, (d6_str, G) in enumerate(_iter_digraph6_pairs(n)):
+    for idx, G in enumerate(digraph_generator(n)):
         chi_d = dichromatic_number(G, allow_digons=args.allow_digons)
         dnc = directed_neighborhood_complex(G)
         ht = _homotopy_str(homotopy_type_sc_with_verdict(dnc))
@@ -268,11 +242,11 @@ def main() -> None:
             print(f"  {idx} digraphs processed...", flush=True)
 
     if fmt == "csv":
-        _write_csv(n, rows, output_file)
+        _write_csv(rows, output_file)
     else:
         _write_org_table(n, rows, output_file)
     print(f"Done. {len(rows)} digraphs written to: {output_file}")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

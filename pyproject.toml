@@ -42,7 +42,8 @@ docs = [
 ]
 dev = [
     "ruff>=0.1",
-    "mypy>=0.9",
+    "mypy>=1.14,<1.15",
+    "types-networkx",
 ]
 
 [project.urls]
@@ -56,7 +57,7 @@ packages = ["dicolor"]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
-dicolor = ["data/*.d6", "data/*.d6.gz"]
+dicolor = ["py.typed", "data/*.d6", "data/*.d6.gz"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -65,9 +66,14 @@ addopts = "-v --tb=short"
 
 [tool.mypy]
 python_version = "3.8"
+mypy_path = "src"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = ["matplotlib.*"]
+follow_imports = "skip"
 
 [tool.ruff]
 line-length = 88
