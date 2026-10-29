@@ -113,12 +113,11 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">pycombtop.homotopy_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">homotopy_type_with_verdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pycombtop.homotopy_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">HomotopyVerdict</span><span class="p">,</span> <span class="n">homotopy_type_with_verdict</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.digraph_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">digraph_generator</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">.digraph_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">dichromatic_number</span>
@@ -136,7 +135,8 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">_time_limit</span><span class="p">(</span><span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Raise _TimeoutError if the block takes longer than *seconds*."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_handler</span><span class="p">(</span><span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_handler</span><span class="p">(</span><span class="n">_signum</span><span class="p">,</span> <span class="n">_frame</span><span class="p">):</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="p">(</span><span class="n">_signum</span><span class="p">,</span> <span class="n">_frame</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">_TimeoutError</span><span class="p">()</span>
 
     <span class="n">old</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGALRM</span><span class="p">,</span> <span class="n">_handler</span><span class="p">)</span>
@@ -169,7 +169,7 @@
     <span class="k">return</span> <span class="n">A</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_homotopy_str</span><span class="p">(</span><span class="n">verdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_homotopy_str</span><span class="p">(</span><span class="n">verdict</span><span class="p">:</span> <span class="n">HomotopyVerdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return a plain-text representation of a homotopy verdict."""</span>
     <span class="n">ht</span> <span class="o">=</span> <span class="n">verdict</span><span class="o">.</span><span class="n">verdict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">verdict</span><span class="o">.</span><span class="n">is_exact</span><span class="p">:</span>
@@ -221,7 +221,6 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_write_csv</span><span class="p">(</span>
-    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">domain_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
     <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -315,7 +314,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> digraphs processed..."</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">"csv"</span><span class="p">:</span>
-        <span class="n">_write_csv</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">domain_label</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+        <span class="n">_write_csv</span><span class="p">(</span><span class="n">domain_label</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_write_org_table</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">domain_label</span><span class="p">,</span> <span class="n">domain_desc</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Done. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="si">}</span><span class="s2"> digraphs written to: </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
@@ -323,7 +322,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+    <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
            </div>

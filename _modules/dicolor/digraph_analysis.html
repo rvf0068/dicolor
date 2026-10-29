@@ -98,46 +98,15 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">pycombtop</span><span class="w"> </span><span class="kn">import</span> <span class="n">directed_neighborhood_complex</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pycombtop.homotopy_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">homotopy_type_sc_with_verdict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pycombtop.homotopy_type</span><span class="w"> </span><span class="kn">import</span> <span class="n">HomotopyVerdict</span><span class="p">,</span> <span class="n">homotopy_type_sc_with_verdict</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">.digraph_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_digraph6</span><span class="p">,</span> <span class="n">_dict_digraphs</span><span class="p">,</span> <span class="n">_get_data_file_path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.digraph_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">digraph_generator</span>
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
-<span class="c1"># Data loading</span>
-<span class="c1"># ---------------------------------------------------------------------------</span>
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_iter_digraph6_pairs</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Yield ``(d6_string, DiGraph)`` pairs for all digraphs of order *n*."""</span>
-    <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_dict_digraphs</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">"No data for order </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">. Available orders: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_dict_digraphs</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
-        <span class="p">)</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">_dict_digraphs</span><span class="p">[</span><span class="n">n</span><span class="p">]</span>
-    <span class="n">file_path</span> <span class="o">=</span> <span class="n">_get_data_file_path</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">".gz"</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">raw_file</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">raw_file</span><span class="p">,</span> <span class="s2">"rt"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="n">line</span><span class="p">,</span> <span class="n">parse_digraph6</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">"r"</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"utf-8"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">line</span><span class="p">,</span> <span class="n">parse_digraph6</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-
 <span class="c1"># ---------------------------------------------------------------------------</span>
 <span class="c1"># Acyclic coloring</span>
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -211,10 +180,12 @@
     <span class="n">allow_digons</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Generate all acyclic *k*-colorings of *G* via backtracking."""</span>
+    <span class="k">if</span> <span class="n">nodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">node_to_idx</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">node_to_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)}</span>
     <span class="k">if</span> <span class="n">colors_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">colors_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
-        <span class="n">node_to_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)}</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors_list</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">):</span>
         <span class="k">yield</span> <span class="p">{</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">colors_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">))}</span>
@@ -250,7 +221,7 @@
 <span class="c1"># ---------------------------------------------------------------------------</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_homotopy_str</span><span class="p">(</span><span class="n">verdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_homotopy_str</span><span class="p">(</span><span class="n">verdict</span><span class="p">:</span> <span class="n">HomotopyVerdict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Return a plain-text representation of a homotopy verdict."""</span>
     <span class="n">ht</span> <span class="o">=</span> <span class="n">verdict</span><span class="o">.</span><span class="n">verdict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">verdict</span><span class="o">.</span><span class="n">is_exact</span><span class="p">:</span>
@@ -259,7 +230,6 @@
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_write_csv</span><span class="p">(</span>
-    <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
     <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -306,7 +276,7 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">"order"</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Number of vertices. Available: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_DIGRAPH_FILES</span><span class="p">)</span><span class="si">}</span><span class="s2">."</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Number of vertices. Available: 1 to 6."</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">"--format"</span><span class="p">,</span>
@@ -319,16 +289,20 @@
         <span class="n">metavar</span><span class="o">=</span><span class="s2">"FILE"</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">"Output file (default: digraph_analysis_&lt;order&gt;.&lt;fmt&gt;)."</span><span class="p">,</span>
     <span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+    <span class="n">digon_options</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_mutually_exclusive_group</span><span class="p">()</span>
+    <span class="n">digon_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">"--allow-digons"</span><span class="p">,</span>
-        <span class="n">action</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">BooleanOptionalAction</span><span class="p">,</span>
-        <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
-            <span class="s2">"Allow digons (2-cycles) in monochromatic subgraphs, i.e. a "</span>
-            <span class="s2">"directed cycle must have at least 3 vertices to be forbidden "</span>
-            <span class="s2">"(default: True). Use --no-allow-digons to forbid digons."</span>
-        <span class="p">),</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">"allow_digons"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"store_true"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Allow digons in monochromatic subgraphs (the default)."</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">digon_options</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">"--no-allow-digons"</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">"allow_digons"</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">"store_false"</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">"Treat digons as forbidden monochromatic cycles."</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">(</span><span class="n">allow_digons</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
     <span class="n">n</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">order</span>
@@ -338,7 +312,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Processing digraphs of order </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">..."</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">rows</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">d6_str</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">_iter_digraph6_pairs</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">G</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">digraph_generator</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
         <span class="n">chi_d</span> <span class="o">=</span> <span class="n">dichromatic_number</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">allow_digons</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">allow_digons</span><span class="p">)</span>
         <span class="n">dnc</span> <span class="o">=</span> <span class="n">directed_neighborhood_complex</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
         <span class="n">ht</span> <span class="o">=</span> <span class="n">_homotopy_str</span><span class="p">(</span><span class="n">homotopy_type_sc_with_verdict</span><span class="p">(</span><span class="n">dnc</span><span class="p">))</span>
@@ -348,7 +322,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2"> digraphs processed..."</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">"csv"</span><span class="p">:</span>
-        <span class="n">_write_csv</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+        <span class="n">_write_csv</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">_write_org_table</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Done. </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="si">}</span><span class="s2"> digraphs written to: </span><span class="si">{</span><span class="n">output_file</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span></div>
@@ -356,7 +330,7 @@
 
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+    <span class="n">main</span><span class="p">()</span>
 </pre></div>
 
            </div>
